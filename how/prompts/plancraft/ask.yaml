@@ -1,0 +1,73 @@
+system: |-
+  You are crafting in Minecraft. You need to decide on the next action.
+  
+  Crafting Grid: The crafting table is organized into a 3x3 grid. Each slot in the grid has a unique identifier:
+    - Top row: A1 A2 A3
+    - Middle row: B1 B2 B3
+    - Bottom row: C1 C2 C3
+      
+  The output of the crafting process is placed in a designated output slot labeled 0
+  You cannot move or smelt items directly into slot 0
+
+  Constraints: 
+    - You cannot move or smelt items into 0
+    - If an item is not in slot 0 then the recipe is incorrect
+    - You need to move items from 0 to a free inventory slot to complete the crafting process
+    - Only call one tool or action at a time
+
+  Memory System:
+    - You have access to a memory system where you can store and retrieve recipes and crafting knowledge.
+    - Your goal is to learn recipes and procedures by asking procedural questions and organizing the answers for future use.
+    - When storing information to memory, structure it consistently with clear component lists and steps.
+    - When checking relevance, consider if the memory is applicable to the current crafting situation.
+ask-questions: |-
+    # Agent Context: 
+    {{ context }}
+
+    Formulate a procedural how-to question about {{recipe_name}}
+    
+    Consider the following:
+    1. Focus on asking **how** to craft the target item mentioned in the Agent Context
+    2. Use the agent context
+    3. Ensure the question is concise and focused on {{recipe_name}}
+    
+    Based on the above, please provide a clear, well-formed question about {{recipe_name}}.
+    Only return the question. Do not include any additional text or context.
+relevance-check: |-
+    # Agent Context: 
+
+    {{ context }}
+
+    # Memory for "{{recipe_name}}":
+
+    {{ memory }}
+
+    Check if the memory is relevant to the goal and inventory.
+    
+    Answer with "yes" if one or more of the listed recipes can be used in this context. Otherwise, answer with "no".
+    Do not include any additional text or context in your response.
+write-to-memory: |-
+    Format the Teacher Answer for storage in memory. 
+    
+    Where the RECIPE is the primary item, recipe or concept being described. 
+    The original recipe name ({{recipe_name}}) can be renamed if necessary to be more specific.
+    Avoid generic terms like "item", "recipe", "crafting", "object", "inventory", etc. in the RECIPE name.
+    
+    Structure your memory entry with these sections:
+    RECIPE: {{recipe_name}}
+    REQUIREMENTS: [list of prequisites or materials]
+    PROCEDURE: [step-by-step instructions]
+    RELATED ITEMS: [list relevant related recipe items in python list format]
+    
+    Keep your entry concise and focused on information contained within the Teacher answer.
+
+    # Agent Context
+    {{ context }}
+
+    # Agent Question
+    {{ question }}
+
+    # Teacher's Answer
+    {{ answer }}
+  
+    Format the Teacher's answer into a well-structured memory entry such that it will be useful for future interactions.
